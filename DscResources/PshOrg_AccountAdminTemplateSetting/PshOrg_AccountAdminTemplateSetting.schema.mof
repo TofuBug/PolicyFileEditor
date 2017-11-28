@@ -2,7 +2,8 @@
 class PshOrg_AccountAdminTemplateSetting : OMI_BaseResource
 {
 [Key] string Account;
-[Key] string KeyValueName;
+[Key] string Key;
+[Key] string ValueName;
 [write,ValueMap{"Present", "Absent"},Values{"Present", "Absent"}] string Ensure;
 [write] string Data[];
 [write,ValueMap{"Unknown", "String", "ExpandString", "Binary", "DWord", "MultiString", "QWord", "None"},Values{"Unknown","String","ExpandString","Binary","DWord","MultiString","QWord","None"}] string Type;

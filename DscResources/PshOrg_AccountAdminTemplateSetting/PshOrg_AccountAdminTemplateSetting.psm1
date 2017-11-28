@@ -9,14 +9,17 @@ function Get-TargetResource
         [string] $Account,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName
     )
 
     try
     {
         $path = GetPolFilePath -Account $Account -ErrorAction Stop
 
-        $hashTable = GetTargetResourceCommon -Path $path -KeyValueName $KeyValueName
+        $hashTable = GetTargetResourceCommon -Path $path -Key $Key -ValueName $ValueName
         $hashTable['Account'] = $Account
 
         return $hashTable
@@ -35,7 +38,10 @@ function Set-TargetResource
         [string] $Account,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName,
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName,
 
         [ValidateSet('Present', 'Absent')]
         [string] $Ensure = 'Present',
@@ -48,7 +54,7 @@ function Set-TargetResource
     try
     {
         $path = GetPolFilePath -Account $Account -ErrorAction Stop
-        SetTargetResourceCommon -Path $path -KeyValueName $KeyValueName -Ensure $Ensure -Data $Data -Type $Type
+        SetTargetResourceCommon -Path $path -Key $Key -ValueName $ValueName -Ensure $Ensure -Data $Data -Type $Type
     }
     catch
     {
@@ -65,7 +71,10 @@ function Test-TargetResource
         [string] $Account,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName,
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName,
 
         [ValidateSet('Present', 'Absent')]
         [string] $Ensure = 'Present',
@@ -78,7 +87,7 @@ function Test-TargetResource
     try
     {
         $path = GetPolFilePath -Account $Account -ErrorAction Stop
-        return TestTargetResourceCommon -Path $path -KeyValueName $KeyValueName -Ensure $Ensure -Data $Data -Type $Type
+        return TestTargetResourceCommon -Path $path -Key $Key ValueName $ValueName -Ensure $Ensure -Data $Data -Type $Type
     }
     catch
     {

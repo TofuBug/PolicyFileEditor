@@ -10,13 +10,16 @@ function Get-TargetResource
         [string] $PolicyType,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName
     )
 
     try
     {
         $path = GetPolFilePath -PolicyType $PolicyType
-        $hashTable = GetTargetResourceCommon -Path $path -KeyValueName $KeyValueName
+        $hashTable = GetTargetResourceCommon -Path $path -Key $Key -ValueName $ValueName
         $hashTable['PolicyType'] = $PolicyType
 
         return $hashTable
@@ -36,7 +39,10 @@ function Set-TargetResource
         [string] $PolicyType,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName,
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName,
 
         [ValidateSet('Present', 'Absent')]
         [string] $Ensure = 'Present',
@@ -49,7 +55,7 @@ function Set-TargetResource
     try
     {
         $path = GetPolFilePath -PolicyType $PolicyType
-        SetTargetResourceCommon -Path $path -KeyValueName $KeyValueName -Ensure $Ensure -Data $Data -Type $Type
+        SetTargetResourceCommon -Path $path -Key $Key -ValueName $ValueName -Ensure $Ensure -Data $Data -Type $Type
     }
     catch
     {
@@ -67,7 +73,10 @@ function Test-TargetResource
         [string] $PolicyType,
 
         [Parameter(Mandatory)]
-        [string] $KeyValueName,
+        [string] $Key,
+
+        [Parameter(Mandatory)]
+        [string] $ValueName,
 
         [ValidateSet('Present', 'Absent')]
         [string] $Ensure = 'Present',
@@ -80,7 +89,7 @@ function Test-TargetResource
     try
     {
         $path = GetPolFilePath -PolicyType $PolicyType
-        return TestTargetResourceCommon -Path $path -KeyValueName $KeyValueName -Ensure $Ensure -Data $Data -Type $Type
+        return TestTargetResourceCommon -Path $path -Key $Key -ValueName $ValueName -Ensure $Ensure -Data $Data -Type $Type
     }
     catch
     {

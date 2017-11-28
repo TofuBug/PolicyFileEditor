@@ -578,11 +578,13 @@ function GetTargetResourceCommon
 {
     param (
         [string] $Path,
-        [string] $KeyValueName
+        [string] $Key,
+        [string] $ValueName
     )
 
     $configuration = @{
-        KeyValueName = $KeyValueName
+        Key          = $Key
+        ValueName    = $ValueName
         Ensure       = 'Absent'
         Data         = $null
         Type         = [Microsoft.Win32.RegistryValueKind]::Unknown
@@ -590,7 +592,7 @@ function GetTargetResourceCommon
 
     if (Test-Path -LiteralPath $path -PathType Leaf)
     {
-        $key, $valueName = ParseKeyValueName $KeyValueName
+        # $key, $valueName = ParseKeyValueName $KeyValueName
         $entry = Get-PolicyFileEntry -Path $Path -Key $key -ValueName $valueName
 
         if ($entry)
@@ -608,7 +610,8 @@ function SetTargetResourceCommon
 {
     param (
         [string] $Path,
-        [string] $KeyValueName,
+        [string] $Key,
+        [string] $ValueName,
         [string] $Ensure,
         [string[]] $Data,
         [Microsoft.Win32.RegistryValueKind] $Type
@@ -626,15 +629,15 @@ function SetTargetResourceCommon
         return
     }
 
-    $key, $valueName = ParseKeyValueName $KeyValueName
+    # $key, $valueName = ParseKeyValueName $KeyValueName
 
     if ($Ensure -eq 'Present')
     {
-        Set-PolicyFileEntry -Path $Path -Key $key -ValueName $valueName -Data $Data -Type $Type
+        Set-PolicyFileEntry -Path $Path -Key $Key -ValueName $ValueName -Data $Data -Type $Type
     }
     else
     {
-        Remove-PolicyFileEntry -Path $Path -Key $key -ValueName $valueName
+        Remove-PolicyFileEntry -Path $Path -Key $Key -ValueName $ValueName
     }
 }
 
@@ -643,7 +646,8 @@ function TestTargetResourceCommon
     [OutputType([bool])]
     param (
         [string] $Path,
-        [string] $KeyValueName,
+        [string] $Key,
+        [string] $ValueName,
         [string] $Ensure,
         [string[]] $Data,
         [Microsoft.Win32.RegistryValueKind] $Type
@@ -661,21 +665,21 @@ function TestTargetResourceCommon
         return $false
     }
 
-    $key, $valueName = ParseKeyValueName $KeyValueName
+    #$key, $valueName = ParseKeyValueName $KeyValueName
 
     $fileExists = Test-Path -LiteralPath $Path -PathType Leaf
 
     if ($Ensure -eq 'Present')
     {
         if (-not $fileExists) { return $false }
-        $entry = Get-PolicyFileEntry -Path $Path -Key $key -ValueName $valueName
+        $entry = Get-PolicyFileEntry -Path $Path -Key $Key -ValueName $ValueName
 
         return $null -ne $entry -and $Type -eq $entry.Type -and (DataIsEqual $entry.Data $Data -Type $Type)
     }
     else # Ensure is 'Absent'
     {
         if (-not $fileExists) { return $true }
-        $entry = Get-PolicyFileEntry -Path $Path -Key $key -ValueName $valueName
+        $entry = Get-PolicyFileEntry -Path $Path -Key $Key -ValueName $ValueName
 
         return $null -eq $entry
     }
